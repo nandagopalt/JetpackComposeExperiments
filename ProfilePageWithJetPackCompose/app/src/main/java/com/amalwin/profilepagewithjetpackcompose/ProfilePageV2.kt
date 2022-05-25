@@ -35,6 +35,7 @@ fun ProfilePageV2() {
     ) {
         ConstraintLayout() {
             val (image, nameTitle, locationTitle, statisticsRow, buttonFollow, buttonDirectMessages) = createRefs()
+            val guideLine = createGuidelineFromTop(0.1F)
             Image(
                 painter = painterResource(id = R.drawable.passport_photo),
                 contentDescription = "Nalan Sarrwin",
@@ -47,7 +48,7 @@ fun ProfilePageV2() {
                         shape = CircleShape
                     )
                     .constrainAs(image) {
-                        top.linkTo(parent.top)
+                        top.linkTo(guideLine)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
