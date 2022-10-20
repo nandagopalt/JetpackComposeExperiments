@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GreetingsWorld</string>
+    <string name="happy_birthday_text">Happy Birthday Nalan !</string>
+    <string name="from_sender">- from Sarrwin</string>
+</resources>
