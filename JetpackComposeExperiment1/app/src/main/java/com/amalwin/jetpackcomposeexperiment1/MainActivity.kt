@@ -1,8 +1,6 @@
 package com.amalwin.jetpackcomposeexperiment1
 
-import android.R
 import android.os.Bundle
-import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -31,16 +29,16 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     color = MaterialTheme.colors.background
                 ) {
-                    Column(
+                    Row(
                         modifier = Modifier.background(color = Color.Gray)
                             .fillMaxSize(),
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        horizontalAlignment = Alignment.Start
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Greeting("AB")
                         Greeting("CDE")
                         Greeting("F")
                     }
+
                 }
             }
         }
@@ -55,6 +53,20 @@ fun Greeting(name: String) {
         fontWeight = FontWeight.Bold,
         color = Color.Red,
         textAlign = TextAlign.Center,
+        modifier = Modifier
+            .background(color = Color.Yellow)
+            .border(2.dp, color = Color.Green)
+            .padding(10.dp)
+    )
+}
+
+@Composable
+fun GreetingV2(name: String) {
+    Text(
+        text = "Hello $name",
+        fontSize = 15.sp,
+        color = Color.Red,
+        fontWeight = FontWeight.Bold,
         modifier = Modifier
             .background(color = Color.Yellow)
             .border(2.dp, color = Color.Green)
