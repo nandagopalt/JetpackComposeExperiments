@@ -3,19 +3,16 @@ package com.amalwin.jetpackcomposeexperiment1
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +30,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     //BoxLayoutV1("Hi")
-                    BoxLayoutV2()
+                    //BoxLayoutV2()
+                    BoxLayoutV3()
                 }
             }
         }
@@ -206,7 +204,50 @@ fun BoxLayoutV2() {
 
 
     }
+}
 
+@Composable
+fun BoxLayoutV3() {
+    Box(
+        modifier =
+        Modifier.background(color = Color.Cyan)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.download),
+            contentDescription = "Nature's Image",
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.5f)
+                .border(2.dp, Color.Red)
+                .padding(10.dp)
+        )
+        Text(
+            text = "Nature's Gift",
+            style = MaterialTheme.typography.h5,
+            color = Color.DarkGray,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(10.dp)
+                .align(Alignment.BottomStart)
+        )
+
+        Button(
+            onClick = {},
+            colors = ButtonDefaults.textButtonColors(
+                backgroundColor = Color.DarkGray,
+                contentColor = Color.White
+            ),
+            modifier = Modifier
+                .padding(5.dp)
+                .border(2.dp, color = Color.Gray)
+                .align(Alignment.TopEnd)
+        ) {
+            Text(
+                text = "Add to cart",
+                style = MaterialTheme.typography.h6,
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
