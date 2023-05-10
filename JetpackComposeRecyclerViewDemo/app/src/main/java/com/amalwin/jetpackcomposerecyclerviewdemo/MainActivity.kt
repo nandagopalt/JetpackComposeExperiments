@@ -1,7 +1,7 @@
 package com.amalwin.jetpackcomposerecyclerviewdemo
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
@@ -39,7 +39,8 @@ class MainActivity : ComponentActivity() {
                 Toast.makeText(this, it, Toast.LENGTH_LONG).show()
             }*/
             showTVShows {
-                Toast.makeText(this, "${it.name} selected", Toast.LENGTH_LONG).show()
+                //Toast.makeText(this, "${it.name} selected", Toast.LENGTH_LONG).show()
+                startActivity(InfoActivity.intent(this, it))
             }
         }
     }
