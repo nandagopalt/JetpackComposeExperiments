@@ -1,10 +1,12 @@
 package com.amalwintech.profilecardlayout
 
+import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -37,11 +40,18 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -52,22 +62,42 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            EmployeeListView()
+            UsersApplication()
         }
     }
 }
 
 @Composable
-fun UsersApplication() {
+fun UsersApplication(userProfileList: List<UserProfile> = userProfileListHolder) {
     val navController = rememberNavController()
+    NavHost(navController = navController, "employee_list") {
+        composable("employee_list") {
+            EmployeeListView(userProfileList, navController)
+        }
+        composable(
+            route = "employee_Details/{employee_id}",
+            arguments = listOf(navArgument("employee_id") {
+                type = NavType.IntType
+            })
+        ) { navBackStackEntry ->
+            EmployeeDetailView(navBackStackEntry.arguments!!.getInt("employee_id"), navController)
+        }
+    }
 
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmployeeListView(userProfileList: List<UserProfile> = userProfileListHolder) {
-    Scaffold(topBar = { AppBar() }) { padding ->
+fun EmployeeListView(userProfileList: List<UserProfile>, navController: NavHostController?) {
+    Scaffold(topBar = {
+        AppBar(
+            title = "Employee List",
+            navigationIcon = Icons.Default.Home
+        ) {
+
+        }
+    }) { padding ->
         Surface(
             color = Color.LightGray,
             modifier = Modifier
@@ -81,7 +111,11 @@ fun EmployeeListView(userProfileList: List<UserProfile> = userProfileListHolder)
 
             LazyColumn() {
                 items(userProfileList) { userProfile ->
-                    ProfileCard(userProfile)
+                    ProfileCard(userProfile) {
+                        navController?.navigate("employee_Details/${userProfile.userId}") {
+
+                        }
+                    }
                 }
             }
         }
@@ -90,29 +124,35 @@ fun EmployeeListView(userProfileList: List<UserProfile> = userProfileListHolder)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar() {
+fun AppBar(title: String, navigationIcon: ImageVector, onClickListener: () -> Unit) {
     TopAppBar(
         title = { Text(text = "Messaging Application User") },
         navigationIcon = {
             Icon(
-                Icons.Default.Home,
+                navigationIcon,
                 contentDescription = "",
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .clickable {
+                        onClickListener.invoke()
+                    },
             )
         },
     )
 }
 
 @Composable
-fun ProfileCard(userProfile: UserProfile) {
+fun ProfileCard(userProfile: UserProfile, onClickListener: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(Alignment.Top)
-            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp),
+            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
+            .clickable(onClick = { onClickListener.invoke() }),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        shape = CutCornerShape(topEnd = 24.dp)
-    ) {
+        shape = CutCornerShape(topEnd = 24.dp),
+
+        ) {
         Row(
             modifier = Modifier.wrapContentSize(),
             horizontalArrangement = Arrangement.Start,
@@ -203,8 +243,18 @@ fun ProfileContent(name: String, onlineStatus: Boolean, alignment: Alignment.Hor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmployeeDetailView(userDetail: UserProfile = userProfileListHolder[0]) {
-    Scaffold(topBar = { AppBar() }) { paddingValues ->
+fun EmployeeDetailView(userId: Int, navHostController: NavHostController?) {
+    val userProfile = userProfileListHolder.first { userProfile ->
+        userId == userProfile.userId
+    }
+    Scaffold(topBar = {
+        AppBar(
+            title = "Employee Details",
+            navigationIcon = Icons.Default.ArrowBack
+        ) {
+            navHostController?.navigateUp()
+        }
+    }) { paddingValues ->
         Surface(
             color = Color.LightGray,
             modifier = Modifier
@@ -216,7 +266,7 @@ fun EmployeeDetailView(userDetail: UserProfile = userProfileListHolder[0]) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                EmployeeDetail(userProfile = userDetail)
+                EmployeeDetail(userProfile = userProfile)
             }
 
         }
@@ -249,7 +299,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun EmployeeProfileListPreview() {
     ProfileCardLayoutTheme {
-        EmployeeListView()
+        EmployeeListView(userProfileList = userProfileListHolder, null)
     }
 }
 
@@ -257,6 +307,6 @@ fun EmployeeProfileListPreview() {
 @Preview(showBackground = true)
 fun EmployeeDetailPreview() {
     ProfileCardLayoutTheme() {
-        EmployeeDetailView()
+        EmployeeDetailView(userId = 10, null)
     }
 }
