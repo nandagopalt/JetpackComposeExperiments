@@ -225,7 +225,7 @@ fun ProfileContent(name: String, onlineStatus: Boolean, alignment: Alignment.Hor
             .padding(8.dp),
         horizontalAlignment = alignment
     ) {
-        CompositionLocalProvider(
+                CompositionLocalProvider(
             LocalContentColor provides
                     if (onlineStatus) {
                         MaterialTheme.colorScheme.onSurface.copy(alpha = 1f)
